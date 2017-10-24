@@ -1,0 +1,41 @@
+<html>
+ <head>
+   <title>myPhoton</title>
+   <!-- Die Particle Javascript Bibliothek einbinden -->
+   <script type="text/javascript" src="http://cdn.jsdelivr.net/particle-api-js/5/particle.min.js"></script>
+ </head>
+
+ <body>
+   <!-- Eine sehr simple HTML Seite mit zwei Buttons -->
+   <center>
+     <span id="lightvalue">Lichtsensor noch nicht abgefragt</span>
+     <br/>
+     <button type="button" onclick="trigger()">Trigger</button>
+     <button type="button" onclick="update()">Lichtsensor abfragen</button>
+   </center>
+
+   <!-- Hier kommt der javascript code -->
+   <script>
+     var token = 'YOUR_TOKEN'; // Hier das Access Token eintragen. Ist unter Settings zu finden.
+     var device = 'YOUR_DEVICE_ID';   // Hier die Device ID eintragen. Ist unter Devices zu finden.
+     var particle = new Particle(); // Die Bibliothek initialisieren.
+
+     // Die trigger funktion
+     function trigger(){
+       particle.callFunction({ deviceId: device, name: 'trigger', auth: token });
+     }
+
+     // Diese Funktion updated den Helligkeitswert.
+     function update(){
+       particle.getVariable({ deviceId: device, name: 'light', auth: token }).then(function(data){
+         // Wert in den HTML Code schreiben.
+         document.getElementById("lightvalue").innerHTML = data.body.result;
+       });
+     }
+
+     // Um sich das klicken auf den Button zum Auslesen des aktuellen wertes zu ersparen, kann
+     // man die Funktion automatisch jede Sekunde aufrufen:
+     setInterval("update();", 1000);
+   </script>
+ </body>
+</html>
